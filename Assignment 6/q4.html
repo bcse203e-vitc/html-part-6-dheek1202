@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Hobbies Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    .hobby-input {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .error {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: -0.5rem;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+    button {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Enter Your Hobbies</h2>
+  <form id="hobbyForm" novalidate>
+    <div id="hobbiesContainer">
+      <input type="text" name="hobby0" class="hobby-input" placeholder="Enter hobby" />
+      <div class="error">Only alphabets and spaces allowed.</div>
+    </div>
+    <button type="button" id="addHobbyBtn">Add Hobby</button>
+    <br/>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const hobbiesContainer = document.getElementById('hobbiesContainer');
+    const addHobbyBtn = document.getElementById('addHobbyBtn');
+    const hobbyForm = document.getElementById('hobbyForm');
+    let hobbyCount = 1;
+
+    const hobbyRegex = /^[A-Za-z\s]+$/;
+
+    function createHobbyInput(index) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = `hobby${index}`;
+      input.placeholder = 'Enter hobby';
+      input.classList.add('hobby-input');
+
+      const errorDiv = document.createElement('div');
+      errorDiv.classList.add('error');
+      errorDiv.textContent = 'Only alphabets and spaces allowed.';
+
+      hobbiesContainer.appendChild(input);
+      hobbiesContainer.appendChild(errorDiv);
+
+      input.addEventListener('input', () => validateInput(input, errorDiv));
+    }
+
+    function validateInput(input, errorDiv) {
+      if (input.value.trim() === '' || hobbyRegex.test(input.value.trim())) {
+        errorDiv.style.display = 'none';
+        input.setCustomValidity('');
+      } else {
+        errorDiv.style.display = 'block';
+        input.setCustomValidity('Invalid hobby name');
+      }
+    }
+
+    addHobbyBtn.addEventListener('click', () => {
+      createHobbyInput(hobbyCount++);
+    });
+
+    const firstInput = hobbiesContainer.querySelector('input');
+    const firstErrorDiv = hobbiesContainer.querySelector('.error');
+    firstInput.addEventListener('input', () => validateInput(firstInput, firstErrorDiv));
+
+    hobbyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let allValid = true;
+
+      const inputs = hobbiesContainer.querySelectorAll('input');
+      const errors = hobbiesContainer.querySelectorAll('.error');
+
+      inputs.forEach((input, idx) => {
+        validateInput(input, errors[idx]);
+        if (!input.checkValidity()) {
+          allValid = false;
+        }
+      });
+
+      if (allValid) {
+        const hobbies = Array.from(inputs).map(input => input.value.trim());
+        alert('Submitted hobbies: ' + hobbies.join(', '));
+        hobbyForm.reset();
+        hobbiesContainer.innerHTML = '';
+        hobbyCount = 0;
+        createHobbyInput(hobbyCount++);
+      }
+    });
+  </script>
+</body>
+</html>

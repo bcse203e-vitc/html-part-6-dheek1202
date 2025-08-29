@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Country Dropdown</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      width: 220px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Select Continent and Country</h2>
+  <label for="continent">Continent:</label>
+  <select id="continent">
+    <option value="">-- Select Continent --</option>
+    <option value="asia">Asia</option>
+    <option value="europe">Europe</option>
+    <option value="northAmerica">North America</option>
+    <option value="southAmerica">South America</option>
+    <option value="africa">Africa</option>
+    <option value="australia">Australia</option>
+    <option value="antarctica">Antarctica</option>
+  </select>
+
+  <br/>
+
+  <label for="country">Country:</label>
+  <select id="country" disabled>
+    <option value="">-- Select Country --</option>
+  </select>
+
+  <script>
+    const continentSelect = document.getElementById('continent');
+    const countrySelect = document.getElementById('country');
+
+    const continentCountries = {
+      asia: ['China', 'India', 'Japan', 'South Korea', 'Indonesia'],
+      europe: ['Germany', 'France', 'United Kingdom', 'Italy', 'Spain'],
+      northAmerica: ['United States', 'Canada', 'Mexico', 'Cuba', 'Panama'],
+      southAmerica: ['Brazil', 'Argentina', 'Chile', 'Colombia', 'Peru'],
+      africa: ['Nigeria', 'Egypt', 'South Africa', 'Kenya', 'Morocco'],
+      australia: ['Australia', 'New Zealand', 'Fiji', 'Papua New Guinea', 'Samoa'],
+      antarctica: []
+    };
+
+    continentSelect.addEventListener('change', () => {
+      const continent = continentSelect.value;
+      countrySelect.innerHTML = '<option value="">-- Select Country --</option>';
+
+      if (continent && continentCountries[continent]) {
+        continentCountries[continent].forEach(country => {
+          const option = document.createElement('option');
+          option.value = country.toLowerCase().replace(/\s+/g, '');
+          option.textContent = country;
+          countrySelect.appendChild(option);
+        });
+        countrySelect.disabled = false;
+      } else {
+        countrySelect.disabled = true;
+      }
+    });
+  </script>
+
+</body>
+</html>

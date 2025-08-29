@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Password Match Check</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    input {
+      display: block;
+      margin: 0.5rem 0 1rem 0;
+      padding: 0.5rem;
+      width: 300px;
+      font-size: 1rem;
+    }
+    #message {
+      font-weight: bold;
+    }
+    .match {
+      color: green;
+    }
+    .no-match {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Create Password</h2>
+  <form id="passwordForm" novalidate>
+    <input type="password" id="password" placeholder="Password" autocomplete="new-password" />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" />
+    <div id="message"></div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const message = document.getElementById('message');
+
+    function checkPasswords() {
+      if (password.value === '' && confirmPassword.value === '') {
+        message.textContent = '';
+        message.className = '';
+        return;
+      }
+      if (password.value === confirmPassword.value) {
+        message.textContent = 'Passwords match';
+        message.className = 'match';
+      } else {
+        message.textContent = 'Passwords do not match';
+        message.className = 'no-match';
+      }
+    }
+
+    password.addEventListener('input', checkPasswords);
+    confirmPassword.addEventListener('input', checkPasswords);
+
+    document.getElementById('passwordForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (password.value !== confirmPassword.value) {
+        alert('Passwords do not match!');
+      } else if (password.value === '') {
+        alert('Password cannot be empty!');
+      } else {
+        alert('Form submitted successfully!');
+        e.target.reset();
+        message.textContent = '';
+        message.className = '';
+      }
+    });
+  </script>
+
+</body>
+</html>

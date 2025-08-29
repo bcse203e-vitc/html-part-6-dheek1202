@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dynamic Registration Form</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 40px auto;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+  }
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+  .error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 2px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    font-size: 1em;
+  }
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+
+<h2>Registration Form</h2>
+
+<form id="registrationForm" novalidate>
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" />
+  <div id="nameError" class="error"></div>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" />
+  <div id="emailError" class="error"></div>
+
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" />
+  <div id="passwordError" class="error"></div>
+
+  <button type="submit" id="submitBtn" disabled>Submit</button>
+</form>
+
+<script>
+  const form = document.getElementById('registrationForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const submitBtn = document.getElementById('submitBtn');
+
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  function validateName() {
+    const value = nameInput.value.trim();
+    if (value === '') {
+      nameError.textContent = 'Name is required.';
+      return false;
+    }
+    nameError.textContent = '';
+    return true;
+  }
+
+  function validateEmail() {
+    const value = emailInput.value.trim();
+    if (value === '') {
+      emailError.textContent = 'Email is required.';
+      return false;
+    } else if (!emailRegex.test(value)) {
+      emailError.textContent = 'Invalid email format.';
+      return false;
+    }
+    emailError.textContent = '';
+    return true;
+  }
+
+  function validatePassword() {
+    const value = passwordInput.value;
+    if (value === '') {
+      passwordError.textContent = 'Password is required.';
+      return false;
+    } else if (!passwordRegex.test(value)) {
+      passwordError.textContent = 'Password must be at least 8 characters, include one uppercase letter and one number.';
+      return false;
+    }
+    passwordError.textContent = '';
+    return true;
+  }
+
+  function toggleSubmit() {
+    if (validateName() && validateEmail() && validatePassword()) {
+      submitBtn.disabled = false;
+    } else {
+      submitBtn.disabled = true;
+    }
+  }
+
+  nameInput.addEventListener('blur', () => {
+    validateName();
+    toggleSubmit();
+  });
+
+  emailInput.addEventListener('blur', () => {
+    validateEmail();
+    toggleSubmit();
+  });
+
+  passwordInput.addEventListener('blur', () => {
+    validatePassword();
+    toggleSubmit();
+  });
+
+  [nameInput, emailInput, passwordInput].forEach(input => {
+    input.addEventListener('input', toggleSubmit);
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Form submitted successfully!');
+  });
+</script>
+
+</body>
+</html>

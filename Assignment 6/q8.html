@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hex Color Validation & Preview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 150px;
+    }
+    .preview {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      transition: background-color 0.3s ease;
+    }
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      visibility: hidden;
+    }
+    .error.visible {
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Enter Hex Color Code</h2>
+  <div class="container">
+    <input type="text" id="colorInput" placeholder="#FFF or #FFFFFF" autocomplete="off" />
+    <div class="preview" id="colorPreview"></div>
+  </div>
+  <div class="error" id="errorMsg">Invalid hex color code</div>
+
+  <script>
+    const colorInput = document.getElementById('colorInput');
+    const colorPreview = document.getElementById('colorPreview');
+    const errorMsg = document.getElementById('errorMsg');
+    const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+
+    colorInput.addEventListener('input', () => {
+      const value = colorInput.value.trim();
+      if (hexRegex.test(value)) {
+        errorMsg.classList.remove('visible');
+        colorPreview.style.backgroundColor = value;
+      } else {
+        errorMsg.classList.add('visible');
+        colorPreview.style.backgroundColor = '#fff';
+      }
+    });
+  </script>
+
+</body>
+</html>

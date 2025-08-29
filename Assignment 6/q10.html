@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic Form Builder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      max-width: 500px;
+    }
+    label, select, button, input {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      display: block;
+    }
+    input.dynamic-input {
+      width: 100%;
+      padding: 0.4rem;
+      margin-bottom: 0.25rem;
+      box-sizing: border-box;
+    }
+    .error {
+      color: red;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+    button {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Dynamic Form Builder</h2>
+
+  <label for="inputType">Select Input Type:</label>
+  <select id="inputType">
+    <option value="text">Text</option>
+    <option value="email">Email</option>
+    <option value="password">Password</option>
+  </select>
+
+  <button type="button" id="addInputBtn">Add Input</button>
+
+  <form id="dynamicForm" novalidate>
+    <div id="inputsContainer"></div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const inputTypeSelect = document.getElementById('inputType');
+    const addInputBtn = document.getElementById('addInputBtn');
+    const inputsContainer = document.getElementById('inputsContainer');
+    const form = document.getElementById('dynamicForm');
+  
+    const regexMap = {
+      text: /^[A-Za-z\s]+$/,
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      password: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/ // Password: min 6 chars, at least one letter and one number
+    };
+  
+    let inputCount = 0;
+  
+    function createInputField(type, index) {
+      const wrapper = document.createElement('div');
+      wrapper.style.marginBottom = '1rem';
+  
+      const label = document.createElement('label');
+      label.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} Input ${index + 1}:`;
+      label.htmlFor = `input${index}`;
+      wrapper.appendChild(label);
+  
+      const input = document.createElement('input');
+      input.type = type === 'password' ? 'password' : 'text';
+      input.id = `input${index}`;
+      input.name = `input${index}`;
+      input.placeholder = `Enter ${type}`;
+      input.classList.add('dynamic-input');
+      wrapper.appendChild(input);
+  
+      const error = document.createElement('div');
+      error.className = 'error';
+      error.textContent = `Invalid ${type} format.`;
+      wrapper.appendChild(error);
+  
+      input.addEventListener('input', () => {
+        if (regexMap[type].test(input.value.trim())) {
+          error.style.display = 'none';
+          input.setCustomValidity('');
+        } else {
+          error.style.display = 'block';
+          input.setCustomValidity('Invalid input');
+        }
+      });
+  
+      inputsContainer.appendChild(wrapper);
+    }
+  
+    addInputBtn.addEventListener('click', () => {
+      const selectedType = inputTypeSelect.value;
+      createInputField(selectedType, inputCount++);
+    });
+  
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      let allValid = true;
+  
+      const inputs = inputsContainer.querySelectorAll('input');
+      inputs.forEach((input) => {
+        const type = input.previousElementSibling.textContent.toLowerCase().includes('email') ? 'email'
+                    : input.previousElementSibling.textContent.toLowerCase().includes('password') ? 'password'
+                    : 'text';
+        const val = input.value.trim();
+        if (!regexMap[type].test(val)) {
+          allValid = false;
+          input.setCustomValidity('Invalid input');
+          input.reportValidity();
+        } else {
+          input.setCustomValidity('');
+        }
+      });
+  
+      if (allValid) {
+        alert('Form submitted successfully!');
+        form.reset();
+        inputsContainer.innerHTML = '';
+        inputCount = 0;
+      }
+    });
+  </script>
+
+</body>
+</html>
